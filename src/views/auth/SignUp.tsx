@@ -1,16 +1,46 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {FC} from 'react';
-import AppInput from '@ui/AppInput';
 import colors from '@utils/Colors';
+import {Formik} from 'formik';
 import {
   View,
   StyleSheet,
   Text,
   SafeAreaView,
   TouchableOpacity,
+  Button,
 } from 'react-native';
+import AuthInputField from '@components/AuthInputField';
+import * as yup from 'yup';
 
 interface SignUpProps {}
+
+const signupSchema = yup.object({
+  name: yup
+    .string()
+    .trim('Name is Missing')
+    .min(3, 'Name must be more than 2 chars')
+    .required('Name is requried'),
+  email: yup
+    .string()
+    .trim('Email is Missing')
+    .email('Invalid Email')
+    .required('Email is requried'),
+  password: yup
+    .string()
+    .trim('Password is Missing')
+    .min(8, 'Password is too short')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      'Password is too simple',
+    )
+    .required('Password is requried'),
+});
+const initialValues = {
+  name: '',
+  email: '',
+  password: '',
+};
 
 const SignUp: FC<SignUpProps> = ({}) => {
   return (
@@ -21,26 +51,49 @@ const SignUp: FC<SignUpProps> = ({}) => {
           Let's get started by creating your account.
         </Text>
       </View>
-      <View style={styles.formContainer}>
-        <View>
-          <Text style={styles.label}>Name</Text>
-          <AppInput placeholder="John Doe" />
-        </View>
 
-        <View>
-          <Text style={styles.label}>Email</Text>
-          <AppInput placeholder="john@gmail.com" autoCapitalize="none" />
-        </View>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={values => {
+          console.log(values);
+        }}
+        validationSchema={signupSchema}>
+        {({handleSubmit, values, handleChange, errors}) => (
+          <View style={styles.formContainer}>
+            <AuthInputField
+              label="Name"
+              placeholder="John Doe"
+              onChange={handleChange('name')}
+              value={values.name}
+              errorMsg={errors.name}
+            />
+            <AuthInputField
+              label="Email"
+              placeholder="john@gmail.com"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              onChange={handleChange('email')}
+              value={values.email}
+              errorMsg={errors.email}
+            />
+            <AuthInputField
+              label="Password"
+              placeholder="************"
+              secureTextEntry={true}
+              autoCapitalize="none"
+              onChange={handleChange('password')}
+              value={values.password}
+              errorMsg={errors.password}
+            />
+            <Button
+              onPress={() => handleSubmit()}
+              title="Sign Up"
+              color={colors.SECONDARY}
+            />
+          </View>
+        )}
+      </Formik>
 
-        <View>
-          <Text style={styles.label}>Password</Text>
-          <AppInput placeholder="******" secureTextEntry />
-        </View>
-
-        <TouchableOpacity style={styles.btn}>
-          <Text style={styles.btnText}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
       <View style={styles.footerContainer}>
         <TouchableOpacity>
           <Text style={{color: colors.ERROR}}>I Lost My Password?</Text>
@@ -73,23 +126,11 @@ const styles = StyleSheet.create({
   welcometSubText: {
     color: colors.CONTRAST,
   },
-  input: {
-    borderWidth: 2,
-    borderColor: colors.SECONDARY,
-    height: 45,
-    color: colors.CONTRAST,
-    borderRadius: 25,
-    padding: 10,
-  },
-  label: {
-    color: colors.CONTRAST,
-    marginLeft: 16,
-    marginBottom: 5,
-  },
+
   formContainer: {
     width: '100%',
     paddingHorizontal: 16,
-    gap: 30,
+    gap: 20,
   },
   btn: {
     backgroundColor: colors.SECONDARY,
