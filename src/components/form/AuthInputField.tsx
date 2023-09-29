@@ -2,7 +2,7 @@
 import AppInput from '@ui/AppInput';
 import colors from '@utils/Colors';
 import {useFormikContext} from 'formik';
-import {FC, useEffect} from 'react';
+import {FC, ReactNode, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -10,6 +10,7 @@ import {
   TextInputProps,
   StyleProp,
   ViewStyle,
+  Pressable,
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -27,6 +28,8 @@ interface AuthInputFieldProps {
   autoCapitalize?: TextInputProps['autoCapitalize'];
   secureTextEntry?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
+  rightIcon?: ReactNode;
+  onRightIconPressed?: () => void;
 }
 
 const AuthInputField: FC<AuthInputFieldProps> = ({
@@ -37,6 +40,8 @@ const AuthInputField: FC<AuthInputFieldProps> = ({
   autoCapitalize,
   secureTextEntry,
   containerStyle,
+  rightIcon,
+  onRightIconPressed,
 }) => {
   const inputTransformValue = useSharedValue(0);
   const {handleChange, values, errors, touched, handleBlur} = useFormikContext<{
@@ -73,15 +78,22 @@ const AuthInputField: FC<AuthInputFieldProps> = ({
         <Text style={styles.label}>{label}</Text>
         <Text style={styles.errorMsg}>{errorMsg}</Text>
       </View>
-      <AppInput
-        placeholder={placeholder}
-        keyboardType={keyboardType}
-        autoCapitalize={autoCapitalize}
-        secureTextEntry={secureTextEntry}
-        onChangeText={handleChange(name)}
-        value={values[name]}
-        onBlur={handleBlur(name)}
-      />
+      <View>
+        <AppInput
+          placeholder={placeholder}
+          keyboardType={keyboardType}
+          autoCapitalize={autoCapitalize}
+          secureTextEntry={secureTextEntry}
+          onChangeText={handleChange(name)}
+          value={values[name]}
+          onBlur={handleBlur(name)}
+        />
+        {rightIcon ? (
+          <Pressable style={styles.rightIcon} onPress={onRightIconPressed}>
+            {rightIcon}
+          </Pressable>
+        ) : null}
+      </View>
     </Animated.View>
   );
 };
@@ -98,6 +110,14 @@ const styles = StyleSheet.create({
   },
   errorMsg: {
     color: colors.ERROR,
+  },
+  rightIcon: {
+    width: 45,
+    height: 45,
+    position: 'absolute',
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

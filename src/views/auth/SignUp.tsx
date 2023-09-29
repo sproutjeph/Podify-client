@@ -1,18 +1,14 @@
 /* eslint-disable react/react-in-jsx-scope */
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import colors from '@utils/Colors';
-import {
-  View,
-  StyleSheet,
-  Text,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import AuthInputField from '@components/form/AuthInputField';
 import * as yup from 'yup';
 import Form from '@components/form';
 import SubmitBtn from '@components/form/SubmitBtn';
-import Icon from 'react-native-vector-icons/AntDesign';
+import PasswordVisiblityIcon from '@ui/PasswordVisiblityIcon';
+import AppLink from '@ui/AppLink';
+import AuthFormContainer from '@components/AuthFormContainer';
 
 interface SignUpProps {}
 
@@ -44,21 +40,22 @@ const initialValues = {
 };
 
 const SignUp: FC<SignUpProps> = ({}) => {
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeText}>Welcome!</Text>
-        <Text style={styles.welcometSubText}>
-          Let's get started by creating your account.
-        </Text>
-      </View>
+  const [secureEntry, setSecureEntry] = useState(true);
 
-      <Form
-        initialValues={initialValues}
-        onSubmit={values => {
-          console.log(values);
-        }}
-        validationSchema={signupSchema}>
+  const togglePasswordVisiblity = () => {
+    setSecureEntry(!secureEntry);
+  };
+
+  return (
+    <Form
+      initialValues={initialValues}
+      onSubmit={values => {
+        console.log(values);
+      }}
+      validationSchema={signupSchema}>
+      <AuthFormContainer
+        heading="Welcome!"
+        subHeading="Let's get started by creating your account">
         <View style={styles.formContainer}>
           <AuthInputField name="name" label="Name" placeholder="John Doe" />
           <AuthInputField
@@ -72,51 +69,29 @@ const SignUp: FC<SignUpProps> = ({}) => {
             name="password"
             label="Password"
             placeholder="************"
-            secureTextEntry={true}
+            secureTextEntry={secureEntry}
             autoCapitalize="none"
+            rightIcon={<PasswordVisiblityIcon privateIcon={secureEntry} />}
+            onRightIconPressed={() => {
+              togglePasswordVisiblity();
+            }}
           />
 
           <SubmitBtn title="Sign Up" />
-          <Icon name="stepforward" />
-        </View>
-      </Form>
 
-      <View style={styles.footerContainer}>
-        <TouchableOpacity>
-          <Text style={{color: colors.ERROR}}>I Lost My Password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={{color: colors.SECONDARY}}>Sign in</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+          <View style={styles.linksContainer}>
+            <AppLink title="I Lost My Password?" color />
+            <AppLink title="Sign in" />
+          </View>
+        </View>
+      </AuthFormContainer>
+    </Form>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.PRIMARY,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  welcomeContainer: {
-    width: '100%',
-    paddingHorizontal: 20,
-    marginBottom: '20%',
-  },
-  welcomeText: {
-    color: colors.SECONDARY,
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  welcometSubText: {
-    color: colors.CONTRAST,
-  },
-
   formContainer: {
     width: '100%',
-    paddingHorizontal: 16,
     gap: 20,
   },
   btn: {
@@ -131,13 +106,13 @@ const styles = StyleSheet.create({
   btnText: {
     color: colors.CONTRAST,
   },
-  footerContainer: {
+  linksContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
     color: colors.ERROR,
     paddingHorizontal: 20,
-    marginTop: 15,
+    alignItems: 'center',
   },
 });
 
