@@ -94,18 +94,6 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 20,
   },
-  btn: {
-    backgroundColor: colors.SECONDARY,
-    height: 45,
-    color: colors.CONTRAST,
-    borderRadius: 25,
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnText: {
-    color: colors.CONTRAST,
-  },
   linksContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
-import {FC} from 'react';
+import {FC, useEffect, useRef, useState} from 'react';
 import colors from '@utils/Colors';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, TextInput, Keyboard} from 'react-native';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import OTPField from '@ui/OTPField';
@@ -12,12 +12,54 @@ interface VerificationProps {}
 const otpFields = new Array(6).fill('');
 
 const Verification: FC<VerificationProps> = ({}) => {
+  const [otp, setOtp] = useState([...otpFields]);
+  const [activeField, setActiveField] = useState(0);
+
+  const inputRef = useRef<TextInput>(null);
+
+  const handleChange = (key: string, index: number) => {
+    const newOtp = [...otp];
+    if (key === 'Backspace') {
+      if (!newOtp[index]) {
+        setActiveField(index - 1);
+      }
+      newOtp[index] = '';
+    } else {
+      setActiveField(index + 1);
+      newOtp[index] = key;
+    }
+
+    setOtp([...newOtp]);
+  };
+
+  const handlePaste = (key: string) => {
+    if (key.length === 6) {
+      Keyboard.dismiss();
+      const newOtp = key.split('');
+      setOtp([...newOtp]);
+    }
+  };
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [activeField]);
+
   return (
     <AuthFormContainer heading="Please check your Email">
       <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
           {otpFields.map((_, index) => (
-            <OTPField key={index} placeholder="*" />
+            <OTPField
+              key={index}
+              placeholder="*"
+              ref={activeField === index ? inputRef : null}
+              onKeyPress={({nativeEvent}) => {
+                handleChange(nativeEvent.key, index);
+              }}
+              keyboardType="numeric"
+              onChangeText={handlePaste}
+              value={otp[index] || ''}
+            />
           ))}
         </View>
 

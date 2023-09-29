@@ -1,19 +1,22 @@
 /* eslint-disable react/react-in-jsx-scope */
 import colors from '@utils/Colors';
-import {FC} from 'react';
+import {forwardRef} from 'react';
 import {StyleSheet, TextInput, TextInputProps} from 'react-native';
 
-interface OTPFieldProps extends TextInputProps {}
+interface OTPFieldProps extends TextInputProps {
+  ref: any;
+}
 
-const OTPField: FC<OTPFieldProps> = (props: OTPFieldProps) => {
+const OTPField = forwardRef<TextInput, OTPFieldProps>((props, ref) => {
   return (
     <TextInput
       {...props}
+      ref={ref}
       style={[styles.input, props.style]}
       placeholderTextColor={colors.INACTIVE_CONTRAST}
     />
   );
-};
+});
 
 const styles = StyleSheet.create({
   input: {
