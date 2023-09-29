@@ -1,4 +1,4 @@
-/* eslint-disable react/react-in-jsx-scope */
+import React from 'react';
 import AppInput from '@ui/AppInput';
 import colors from '@utils/Colors';
 import {useFormikContext} from 'formik';

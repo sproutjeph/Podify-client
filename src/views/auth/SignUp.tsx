@@ -9,6 +9,8 @@ import SubmitBtn from '@components/form/SubmitBtn';
 import PasswordVisiblityIcon from '@ui/PasswordVisiblityIcon';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AuthStackParamList} from 'src/@types/navigation';
 
 interface SignUpProps {}
 
@@ -46,6 +48,8 @@ const SignUp: FC<SignUpProps> = ({}) => {
     setSecureEntry(!secureEntry);
   };
 
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+
   return (
     <Form
       initialValues={initialValues}
@@ -80,8 +84,19 @@ const SignUp: FC<SignUpProps> = ({}) => {
           <SubmitBtn title="Sign Up" />
 
           <View style={styles.linksContainer}>
-            <AppLink title="I Lost My Password?" color />
-            <AppLink title="Sign in" />
+            <AppLink
+              title="I Lost My Password?"
+              color
+              onPress={() => {
+                navigation.navigate('LostPassword');
+              }}
+            />
+            <AppLink
+              title="Sign in"
+              onPress={() => {
+                navigation.navigate('SignIn');
+              }}
+            />
           </View>
         </View>
       </AuthFormContainer>

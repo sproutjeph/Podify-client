@@ -1,11 +1,13 @@
 import React from 'react';
-import SignUp from '@views/auth/SignUp';
-import SignIn from '@views/auth/SignIn';
-import LostPassword from '@views/auth/LostPassword';
-import Verification from '@views/auth/Verification';
+import {NavigationContainer} from '@react-navigation/native';
+import AuthNavigator from '@navigation/AuthNavigator';
 
 const App = () => {
-  return <Verification />;
+  return (
+    <NavigationContainer>
+      <AuthNavigator />
+    </NavigationContainer>
+  );
 };
 
 export default App;
