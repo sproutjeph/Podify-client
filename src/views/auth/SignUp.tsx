@@ -1,17 +1,17 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {FC} from 'react';
 import colors from '@utils/Colors';
-import {Formik} from 'formik';
 import {
   View,
   StyleSheet,
   Text,
   SafeAreaView,
   TouchableOpacity,
-  Button,
 } from 'react-native';
-import AuthInputField from '@components/AuthInputField';
+import AuthInputField from '@components/form/AuthInputField';
 import * as yup from 'yup';
+import Form from '@components/form';
+import SubmitBtn from '@components/form/SubmitBtn';
 
 interface SignUpProps {}
 
@@ -52,47 +52,32 @@ const SignUp: FC<SignUpProps> = ({}) => {
         </Text>
       </View>
 
-      <Formik
+      <Form
         initialValues={initialValues}
         onSubmit={values => {
           console.log(values);
         }}
         validationSchema={signupSchema}>
-        {({handleSubmit, values, handleChange, errors}) => (
-          <View style={styles.formContainer}>
-            <AuthInputField
-              label="Name"
-              placeholder="John Doe"
-              onChange={handleChange('name')}
-              value={values.name}
-              errorMsg={errors.name}
-            />
-            <AuthInputField
-              label="Email"
-              placeholder="john@gmail.com"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              onChange={handleChange('email')}
-              value={values.email}
-              errorMsg={errors.email}
-            />
-            <AuthInputField
-              label="Password"
-              placeholder="************"
-              secureTextEntry={true}
-              autoCapitalize="none"
-              onChange={handleChange('password')}
-              value={values.password}
-              errorMsg={errors.password}
-            />
-            <Button
-              onPress={() => handleSubmit()}
-              title="Sign Up"
-              color={colors.SECONDARY}
-            />
-          </View>
-        )}
-      </Formik>
+        <View style={styles.formContainer}>
+          <AuthInputField name="name" label="Name" placeholder="John Doe" />
+          <AuthInputField
+            name="email"
+            label="Email"
+            placeholder="john@gmail.com"
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          <AuthInputField
+            name="password"
+            label="Password"
+            placeholder="************"
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
+
+          <SubmitBtn title="Sign Up" />
+        </View>
+      </Form>
 
       <View style={styles.footerContainer}>
         <TouchableOpacity>

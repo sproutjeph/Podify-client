@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
 import colors from '@utils/Colors';
 import {FC} from 'react';
-import {View, StyleSheet, Text, TextInput, TextInputProps} from 'react-native';
+import {StyleSheet, TextInput, TextInputProps} from 'react-native';
 
 interface AppInputProps extends TextInputProps {}
 
@@ -17,7 +16,6 @@ const AppInput: FC<AppInputProps> = AppInputProps => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
   input: {
     borderWidth: 2,
     borderColor: colors.SECONDARY,
