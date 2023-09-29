@@ -6,8 +6,8 @@ import {View, StyleSheet, Text, Image} from 'react-native';
 
 interface AuthFormContainerProps {
   children: ReactNode;
-  heading: string;
-  subHeading: string;
+  heading?: string;
+  subHeading?: string;
 }
 
 const AuthFormContainer: FC<AuthFormContainerProps> = ({
