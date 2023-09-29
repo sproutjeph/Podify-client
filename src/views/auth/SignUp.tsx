@@ -12,6 +12,7 @@ import AuthInputField from '@components/form/AuthInputField';
 import * as yup from 'yup';
 import Form from '@components/form';
 import SubmitBtn from '@components/form/SubmitBtn';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 interface SignUpProps {}
 
@@ -76,6 +77,7 @@ const SignUp: FC<SignUpProps> = ({}) => {
           />
 
           <SubmitBtn title="Sign Up" />
+          <Icon name="stepforward" />
         </View>
       </Form>
 
