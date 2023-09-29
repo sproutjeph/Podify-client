@@ -11,6 +11,8 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
+import axiosInstance from '@api/client';
+import {FormikHelpers} from 'formik';
 
 interface SignInProps {}
 
@@ -39,12 +41,31 @@ const SignIn: FC<SignInProps> = ({}) => {
     setSecureEntry(!secureEntry);
   };
 
+  interface SignUserData {
+    email: string;
+    password: string;
+  }
+
+  const handleSubmit = async (
+    values: SignUserData,
+    actions: FormikHelpers<SignUserData>,
+  ) => {
+    actions.setSubmitting(true);
+    try {
+      const {data} = await axiosInstance.post('/auth/sign-in', values);
+
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      actions.setSubmitting(false);
+    }
+  };
+
   return (
     <Form
       initialValues={initialValues}
-      onSubmit={values => {
-        console.log(values);
-      }}
+      onSubmit={handleSubmit}
       validationSchema={signInSchema}>
       <AuthFormContainer heading="Welcome Back">
         <View style={styles.formContainer}>

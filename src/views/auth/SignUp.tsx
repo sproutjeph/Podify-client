@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
 import {FC, useState} from 'react';
 import colors from '@utils/Colors';
@@ -11,8 +12,16 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
+import {FormikHelpers} from 'formik';
+import axiosInstance from '@api/client';
 
 interface SignUpProps {}
+
+interface NewUser {
+  name: string;
+  email: string;
+  password: string;
+}
 
 const signupSchema = yup.object({
   name: yup
@@ -50,12 +59,27 @@ const SignUp: FC<SignUpProps> = ({}) => {
 
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
+  const handleSubmit = async (
+    values: NewUser,
+    actions: FormikHelpers<NewUser>,
+  ) => {
+    actions.setSubmitting(true);
+
+    try {
+      const {data} = await axiosInstance.post('/auth/create', values);
+
+      navigation.navigate('Verification', {userInfo: data?.user});
+    } catch (error) {
+      console.log(error);
+    } finally {
+      actions.setSubmitting(true);
+    }
+  };
+
   return (
     <Form
       initialValues={initialValues}
-      onSubmit={values => {
-        console.log(values);
-      }}
+      onSubmit={handleSubmit}
       validationSchema={signupSchema}>
       <AuthFormContainer
         heading="Welcome!"

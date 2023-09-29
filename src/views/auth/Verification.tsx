@@ -6,16 +6,27 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import OTPField from '@ui/OTPField';
 import AppButton from '@ui/AppButton';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {AuthStackParamList} from 'src/@types/navigation';
+import axiosInstance from '@api/client';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
-interface VerificationProps {}
+type VerificationProps = NativeStackScreenProps<
+  AuthStackParamList,
+  'Verification'
+>;
 
 const otpFields = new Array(6).fill('');
 
-const Verification: FC<VerificationProps> = ({}) => {
+const Verification: FC<VerificationProps> = ({route}) => {
   const [otp, setOtp] = useState([...otpFields]);
   const [activeField, setActiveField] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {userInfo} = route.params;
 
   const inputRef = useRef<TextInput>(null);
+  const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
   const handleChange = (key: string, index: number) => {
     const newOtp = [...otp];
@@ -37,6 +48,30 @@ const Verification: FC<VerificationProps> = ({}) => {
       Keyboard.dismiss();
       const newOtp = key.split('');
       setOtp([...newOtp]);
+    }
+  };
+
+  const isValidOtp = otp.every(value => {
+    return value.trim();
+  });
+
+  const handleSubmit = async () => {
+    if (!isValidOtp) {
+      return;
+    }
+    setIsLoading(true);
+
+    try {
+      const {data} = await axiosInstance.post('/auth/verify-email', {
+        userId: userInfo.id,
+        token: otp.join(''),
+      });
+      navigation.navigate('SignIn');
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -63,7 +98,7 @@ const Verification: FC<VerificationProps> = ({}) => {
           ))}
         </View>
 
-        <AppButton title="Send Link" />
+        <AppButton title="Submit" onPress={handleSubmit} loading={isLoading} />
 
         <View style={styles.linksContainer}>
           <AppLink title="Resend OTP" />
