@@ -10,6 +10,8 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
+import axiosInstance from '@api/client';
+import {FormikHelpers} from 'formik';
 
 interface LostPasswordProps {}
 
@@ -24,14 +26,33 @@ const initialValues = {
   email: '',
 };
 
+interface InitialValue {
+  email: string;
+}
+
 const LostPassword: FC<LostPasswordProps> = ({}) => {
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
+
+  const handleSubmit = async (
+    values: InitialValue,
+    actions: FormikHelpers<InitialValue>,
+  ) => {
+    actions.setSubmitting(true);
+
+    try {
+      const {data} = await axiosInstance.post('/auth/forget-password', values);
+
+      navigation.navigate('Verification', {userInfo: data?.user});
+    } catch (error) {
+      console.log(error);
+    } finally {
+      actions.setSubmitting(true);
+    }
+  };
   return (
     <Form
       initialValues={initialValues}
-      onSubmit={values => {
-        console.log(values);
-      }}
+      onSubmit={handleSubmit}
       validationSchema={LostPasswordSchema}>
       <AuthFormContainer
         heading="Forget Password"

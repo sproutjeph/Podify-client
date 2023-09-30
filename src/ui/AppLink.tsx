@@ -7,11 +7,14 @@ interface AppLinkProps {
   title: string;
   onPress?: () => void;
   color?: boolean;
+  active?: boolean;
 }
 
-const AppLink: FC<AppLinkProps> = ({title, onPress, color}) => {
+const AppLink: FC<AppLinkProps> = ({title, onPress, color, active = true}) => {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable
+      onPress={active ? onPress : null}
+      style={{opacity: active ? 1 : 0.4}}>
       <Text style={color ? styles.error : styles.title}>{title}</Text>
     </Pressable>
   );

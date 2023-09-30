@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {FC, useEffect, useRef, useState} from 'react';
 import colors from '@utils/Colors';
-import {View, StyleSheet, TextInput, Keyboard} from 'react-native';
+import {View, StyleSheet, TextInput, Keyboard, Text} from 'react-native';
 import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import OTPField from '@ui/OTPField';
@@ -22,6 +22,8 @@ const Verification: FC<VerificationProps> = ({route}) => {
   const [otp, setOtp] = useState([...otpFields]);
   const [activeField, setActiveField] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [countDown, setCountDown] = useState(60);
+  const [canSendOTP, setCanSendOTP] = useState(false);
 
   const {userInfo} = route.params;
 
@@ -75,9 +77,37 @@ const Verification: FC<VerificationProps> = ({route}) => {
     }
   };
 
+  const reSendOTP = async () => {
+    setCountDown(60);
+    setCanSendOTP(false);
+    try {
+      await axiosInstance.post('/auth/re-verify-email', {userId: userInfo.id});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeField]);
+
+  useEffect(() => {
+    if (canSendOTP) {
+      return;
+    }
+    const intervalId = setInterval(() => {
+      setCountDown(prev => {
+        if (prev <= 0) {
+          setCanSendOTP(true);
+          clearInterval(intervalId);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [canSendOTP]);
 
   return (
     <AuthFormContainer heading="Please check your Email">
@@ -101,7 +131,10 @@ const Verification: FC<VerificationProps> = ({route}) => {
         <AppButton title="Submit" onPress={handleSubmit} loading={isLoading} />
 
         <View style={styles.linksContainer}>
-          <AppLink title="Resend OTP" />
+          {countDown > 0 ? (
+            <Text style={styles.countDown}>{countDown} sec</Text>
+          ) : null}
+          <AppLink title="Resend OTP" onPress={reSendOTP} active={canSendOTP} />
         </View>
       </View>
     </AuthFormContainer>
@@ -123,7 +156,12 @@ const styles = StyleSheet.create({
     width: '100%',
     color: colors.ERROR,
     paddingHorizontal: 20,
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  countDown: {
+    color: colors.SECONDARY,
+    marginRight: 7,
   },
 });
 
