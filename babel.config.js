@@ -12,6 +12,7 @@ module.exports = {
           '@views': './src/views',
           '@ui': './src/ui',
           '@api': './src/api',
+          '@store': './src/store',
           '@navigation': './src/navigation',
           '@src': './src',
         },
