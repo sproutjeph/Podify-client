@@ -8,11 +8,19 @@ interface AppButtonProps {
   title: string;
   onPress?: () => void;
   loading?: boolean;
+  borderRadius?: number;
 }
 
-const AppButton: FC<AppButtonProps> = ({title, onPress, loading}) => {
+const AppButton: FC<AppButtonProps> = ({
+  title,
+  onPress,
+  loading,
+  borderRadius,
+}) => {
   return (
-    <Pressable style={styles.container} onPress={onPress}>
+    <Pressable
+      style={[styles.container, {borderRadius: borderRadius || 25}]}
+      onPress={onPress}>
       {loading ? <Loader /> : <Text style={styles.title}>{title}</Text>}
     </Pressable>
   );
@@ -25,7 +33,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.SECONDARY,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 25,
   },
   title: {
     color: colors.CONTRAST,
