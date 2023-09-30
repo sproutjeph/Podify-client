@@ -15,6 +15,7 @@ import axiosInstance from '@api/client';
 import {FormikHelpers} from 'formik';
 import {updateLoggedIn, updateProfile} from '@store/auth';
 import {useAppDispatch} from '@store/hooks';
+import {StoreKeys, saveToAsyncStorage} from '@utils/asyncStorage';
 
 interface SignInProps {}
 
@@ -56,6 +57,8 @@ const SignIn: FC<SignInProps> = ({}) => {
     actions.setSubmitting(true);
     try {
       const {data} = await axiosInstance.post('/auth/sign-in', values);
+
+      await saveToAsyncStorage(StoreKeys.AUTH_TOKEN, data.token);
 
       dispatch(updateProfile(data.profile));
       dispatch(updateLoggedIn(true));

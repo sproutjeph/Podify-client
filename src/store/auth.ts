@@ -12,11 +12,13 @@ export interface UserProfile {
 interface AuthState {
   profile: UserProfile | null;
   loggedIn: boolean;
+  authLoadingState: boolean;
 }
 
 const initialState: AuthState = {
   profile: null,
   loggedIn: false,
+  authLoadingState: false,
 };
 const authSlice = createSlice({
   name: 'auth',
@@ -28,9 +30,13 @@ const authSlice = createSlice({
     updateLoggedIn(state, {payload}: PayloadAction<boolean>) {
       state.loggedIn = payload;
     },
+    updateAuthLoadingState(state, {payload}: PayloadAction<boolean>) {
+      state.authLoadingState = payload;
+    },
   },
 });
 
-export const {updateLoggedIn, updateProfile} = authSlice.actions;
+export const {updateLoggedIn, updateProfile, updateAuthLoadingState} =
+  authSlice.actions;
 
 export default authSlice.reducer;
