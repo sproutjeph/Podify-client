@@ -1,5 +1,4 @@
-/* eslint-disable react/react-in-jsx-scope */
-import {FC} from 'react';
+import React, {FC} from 'react';
 import colors from '@utils/Colors';
 import {View, StyleSheet} from 'react-native';
 import AuthInputField from '@components/form/AuthInputField';

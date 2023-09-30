@@ -1,4 +1,4 @@
-/* eslint-disable react/react-in-jsx-scope */
+import React from 'react';
 import colors from '@utils/Colors';
 import {FC} from 'react';
 import {StyleSheet, Text, Pressable} from 'react-native';
