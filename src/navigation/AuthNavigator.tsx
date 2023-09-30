@@ -5,10 +5,12 @@ import SignIn from '@views/auth/SignIn';
 import SignUp from '@views/auth/SignUp';
 import Verification from '@views/auth/Verification';
 import {AuthStackParamList} from 'src/@types/navigation';
+import {useAppSelector} from '@store/hooks';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 const AuthNavigator = () => {
+  const {loggedIn} = useAppSelector(state => state.auth);
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="SignIn" component={SignIn} />

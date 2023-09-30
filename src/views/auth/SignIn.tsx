@@ -13,6 +13,8 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
 import axiosInstance from '@api/client';
 import {FormikHelpers} from 'formik';
+import {updateLoggedIn, updateProfile} from '@store/auth';
+import {useAppDispatch} from '@store/hooks';
 
 interface SignInProps {}
 
@@ -34,6 +36,7 @@ const initialValues = {
 };
 
 const SignIn: FC<SignInProps> = ({}) => {
+  const dispatch = useAppDispatch();
   const [secureEntry, setSecureEntry] = useState(true);
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
@@ -54,7 +57,8 @@ const SignIn: FC<SignInProps> = ({}) => {
     try {
       const {data} = await axiosInstance.post('/auth/sign-in', values);
 
-      console.log(data);
+      dispatch(updateProfile(data.profile));
+      dispatch(updateLoggedIn(true));
     } catch (error) {
       console.log(error);
     } finally {
