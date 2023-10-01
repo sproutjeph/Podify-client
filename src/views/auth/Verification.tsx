@@ -10,6 +10,9 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from 'src/@types/navigation';
 import axiosInstance from '@api/client';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {useAppDispatch} from '@store/hooks';
+import catchAxiosError from '@utils/catchAxiosError';
+import {updateNotification} from '@store/notification';
 
 type VerificationProps = NativeStackScreenProps<
   AuthStackParamList,
@@ -19,6 +22,7 @@ type VerificationProps = NativeStackScreenProps<
 const otpFields = new Array(6).fill('');
 
 const Verification: FC<VerificationProps> = ({route}) => {
+  const dispatch = useAppDispatch();
   const [otp, setOtp] = useState([...otpFields]);
   const [activeField, setActiveField] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +63,9 @@ const Verification: FC<VerificationProps> = ({route}) => {
 
   const handleSubmit = async () => {
     if (!isValidOtp) {
-      return;
+      return dispatch(
+        updateNotification({message: 'Invalid OTP', type: 'error'}),
+      );
     }
     setIsLoading(true);
 
@@ -68,10 +74,16 @@ const Verification: FC<VerificationProps> = ({route}) => {
         userId: userInfo.id,
         token: otp.join(''),
       });
+      dispatch(
+        updateNotification({
+          message: data.message,
+          type: 'success',
+        }),
+      );
       navigation.navigate('SignIn');
-      console.log(data);
     } catch (error) {
-      console.log(error);
+      const errorMessage = catchAxiosError(error);
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     } finally {
       setIsLoading(false);
     }
@@ -82,9 +94,7 @@ const Verification: FC<VerificationProps> = ({route}) => {
     setCanSendOTP(false);
     try {
       await axiosInstance.post('/auth/re-verify-email', {userId: userInfo.id});
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

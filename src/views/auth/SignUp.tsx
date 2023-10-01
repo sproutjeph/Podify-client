@@ -14,6 +14,9 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
 import {FormikHelpers} from 'formik';
 import axiosInstance from '@api/client';
+import catchAxiosError from '@utils/catchAxiosError';
+import {updateNotification} from '@store/notification';
+import {useAppDispatch} from '@store/hooks';
 
 interface SignUpProps {}
 
@@ -51,6 +54,7 @@ const initialValues = {
 };
 
 const SignUp: FC<SignUpProps> = ({}) => {
+  const dispatch = useAppDispatch();
   const [secureEntry, setSecureEntry] = useState(true);
 
   const togglePasswordVisiblity = () => {
@@ -70,7 +74,8 @@ const SignUp: FC<SignUpProps> = ({}) => {
 
       navigation.navigate('Verification', {userInfo: data?.user});
     } catch (error) {
-      console.log(error);
+      const errorMessage = catchAxiosError(error);
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     } finally {
       actions.setSubmitting(true);
     }

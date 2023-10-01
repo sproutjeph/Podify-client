@@ -1,10 +1,13 @@
 import axiosInstance from '@api/client';
 import CategorySelector from '@components/CategorySelector';
 import FileSelector from '@components/FileSelector';
+import {useAppDispatch} from '@store/hooks';
+import {updateNotification} from '@store/notification';
 import AppButton from '@ui/AppButton';
 import Progress from '@ui/Progress';
 import colors from '@utils/Colors';
 import {StoreKeys, getFromAsyncStorage} from '@utils/asyncStorage';
+import catchAxiosError from '@utils/catchAxiosError';
 import {categoriesData} from '@utils/categories';
 import {mapRange} from '@utils/math';
 import React, {useState} from 'react';
@@ -56,6 +59,7 @@ const formSchema = yup.object().shape({
 });
 
 const Upload: FC<UploadProps> = ({}) => {
+  const dispatch = useAppDispatch();
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [upLoadProgress, setUpLoadProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -112,11 +116,8 @@ const Upload: FC<UploadProps> = ({}) => {
       });
       console.log(res.data);
     } catch (error) {
-      if (error instanceof yup.ValidationError) {
-        console.log('validation error', error.errors);
-      } else {
-        console.log(error.response.data);
-      }
+      const errorMessage = catchAxiosError(error);
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     }
     setIsLoading(false);
   };

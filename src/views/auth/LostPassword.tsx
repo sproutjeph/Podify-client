@@ -11,6 +11,9 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
 import axiosInstance from '@api/client';
 import {FormikHelpers} from 'formik';
+import catchAxiosError from '@utils/catchAxiosError';
+import {updateNotification} from '@store/notification';
+import {useAppDispatch} from '@store/hooks';
 
 interface LostPasswordProps {}
 
@@ -30,6 +33,7 @@ interface InitialValue {
 }
 
 const LostPassword: FC<LostPasswordProps> = ({}) => {
+  const dispatch = useAppDispatch();
   const navigation = useNavigation<NavigationProp<AuthStackParamList>>();
 
   const handleSubmit = async (
@@ -43,7 +47,8 @@ const LostPassword: FC<LostPasswordProps> = ({}) => {
 
       navigation.navigate('Verification', {userInfo: data?.user});
     } catch (error) {
-      console.log(error);
+      const errorMessage = catchAxiosError(error);
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     } finally {
       actions.setSubmitting(true);
     }

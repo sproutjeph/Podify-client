@@ -16,6 +16,8 @@ import {FormikHelpers} from 'formik';
 import {updateLoggedIn, updateProfile} from '@store/auth';
 import {useAppDispatch} from '@store/hooks';
 import {StoreKeys, saveToAsyncStorage} from '@utils/asyncStorage';
+import catchAxiosError from '@utils/catchAxiosError';
+import {updateNotification} from '@store/notification';
 
 interface SignInProps {}
 
@@ -62,8 +64,15 @@ const SignIn: FC<SignInProps> = ({}) => {
 
       dispatch(updateProfile(data.profile));
       dispatch(updateLoggedIn(true));
+      dispatch(
+        updateNotification({
+          message: 'Signed In Successfully',
+          type: 'success',
+        }),
+      );
     } catch (error) {
-      console.log(error);
+      const errorMessage = catchAxiosError(error);
+      dispatch(updateNotification({message: errorMessage, type: 'error'}));
     } finally {
       actions.setSubmitting(false);
     }
