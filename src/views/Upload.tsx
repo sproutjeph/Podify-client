@@ -6,7 +6,7 @@ import Progress from '@ui/Progress';
 import colors from '@utils/Colors';
 import {StoreKeys, getFromAsyncStorage} from '@utils/asyncStorage';
 import {categoriesData} from '@utils/categories';
-import {Form} from 'formik';
+import {mapRange} from '@utils/math';
 import React, {useState} from 'react';
 import {FC} from 'react';
 import {
@@ -34,6 +34,8 @@ const defaultFormFields: FormFields = {
   title: '',
   about: '',
   category: '',
+  file: undefined,
+  poster: undefined,
 };
 const formSchema = yup.object().shape({
   title: yup.string().trim().required('Title is Missing'),
@@ -55,11 +57,14 @@ const formSchema = yup.object().shape({
 
 const Upload: FC<UploadProps> = ({}) => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [upLoadProgress, setUpLoadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [audioInfo, setAudioInfo] = useState({
     ...defaultFormFields,
   });
 
   const handleUpload = async () => {
+    setIsLoading(true);
     try {
       const data = await formSchema.validate(audioInfo);
 
@@ -88,6 +93,22 @@ const Upload: FC<UploadProps> = ({}) => {
           Authorization: 'Bearer ' + token,
           'Content-Type': 'multipart/form-data',
         },
+        onUploadProgress: progressEvent => {
+          const uploaded = mapRange({
+            inputMin: 0,
+            inputMax: progressEvent.total || 0,
+            outputMin: 0,
+            outputMax: 100,
+            inputValue: progressEvent.loaded,
+          });
+
+          if (uploaded >= 100) {
+            setAudioInfo({...defaultFormFields});
+            setIsLoading(false);
+          }
+
+          setUpLoadProgress(Math.floor(uploaded));
+        },
       });
       console.log(res.data);
     } catch (error) {
@@ -97,6 +118,7 @@ const Upload: FC<UploadProps> = ({}) => {
         console.log(error.response.data);
       }
     }
+    setIsLoading(false);
   };
   return (
     <ScrollView style={styles.container}>
@@ -140,6 +162,7 @@ const Upload: FC<UploadProps> = ({}) => {
           onChange={text => {
             setAudioInfo({...audioInfo, title: text.nativeEvent.text});
           }}
+          value={audioInfo.title}
         />
         <Pressable
           style={styles.categorySeletor}
@@ -156,6 +179,7 @@ const Upload: FC<UploadProps> = ({}) => {
           onChange={text => {
             setAudioInfo({...audioInfo, about: text.nativeEvent.text});
           }}
+          value={audioInfo.about}
         />
         <CategorySelector
           visible={showCategoryModal}
@@ -171,10 +195,15 @@ const Upload: FC<UploadProps> = ({}) => {
         />
 
         <View style={{marginVertical: 20}}>
-          <Progress progress={50} />
+          {isLoading && <Progress progress={upLoadProgress} />}
         </View>
 
-        <AppButton title="Submit" borderRadius={7} onPress={handleUpload} />
+        <AppButton
+          loading={isLoading}
+          title="Submit"
+          borderRadius={7}
+          onPress={handleUpload}
+        />
       </View>
     </ScrollView>
   );
