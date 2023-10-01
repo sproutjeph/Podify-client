@@ -4,10 +4,13 @@ export const saveToAsyncStorage = async (key: string, value: string) => {
   await AsyncStorage.setItem(key, value);
 };
 export const getFromAsyncStorage = async (key: string) => {
-  return AsyncStorage.getItem(key);
+  return await AsyncStorage.getItem(key);
 };
 export const clearAsyncStorage = async () => {
   await AsyncStorage.clear();
+};
+export const removeFromAsyncStorage = async (key: string) => {
+  await AsyncStorage.removeItem(key);
 };
 
 export enum StoreKeys {
