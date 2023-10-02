@@ -1,7 +1,23 @@
-import axios from 'axios';
-
-const axiosInstance = axios.create({
-  baseURL: 'http://192.168.0.100:8000',
+import {getFromAsyncStorage, StoreKeys} from '@utils/asyncStorage';
+import axios, {CreateAxiosDefaults} from 'axios';
+const baseURL = 'http://192.168.0.100:8000';
+export const axiosInstance = axios.create({
+  baseURL,
 });
 
-export default axiosInstance;
+type headers = CreateAxiosDefaults<any>['headers'];
+
+export const getClient = async (headers?: headers) => {
+  const token = await getFromAsyncStorage(StoreKeys.AUTH_TOKEN);
+
+  if (!token) {
+    return axios.create({baseURL});
+  }
+
+  const defaultHeaders = {
+    Authorization: 'Bearer ' + token,
+    ...headers,
+  };
+
+  return axios.create({baseURL, headers: defaultHeaders});
+};

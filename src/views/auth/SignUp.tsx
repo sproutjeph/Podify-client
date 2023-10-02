@@ -13,7 +13,7 @@ import AuthFormContainer from '@components/AuthFormContainer';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
 import {FormikHelpers} from 'formik';
-import axiosInstance from '@api/client';
+import {axiosInstance} from '@api/client';
 import catchAxiosError from '@utils/catchAxiosError';
 import {updateNotification} from '@store/notification';
 import {useAppDispatch} from '@store/hooks';

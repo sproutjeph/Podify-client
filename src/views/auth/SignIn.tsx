@@ -11,7 +11,7 @@ import AppLink from '@ui/AppLink';
 import AuthFormContainer from '@components/AuthFormContainer';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthStackParamList} from 'src/@types/navigation';
-import axiosInstance from '@api/client';
+import {axiosInstance} from '@api/client';
 import {FormikHelpers} from 'formik';
 import {updateLoggedIn, updateProfile} from '@store/auth';
 import {useAppDispatch} from '@store/hooks';

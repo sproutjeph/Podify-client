@@ -1,4 +1,4 @@
-import axiosInstance from '@api/client';
+import {axiosInstance} from '@api/client';
 import CategorySelector from '@components/CategorySelector';
 import FileSelector from '@components/FileSelector';
 import {useAppDispatch} from '@store/hooks';

@@ -13,6 +13,7 @@ module.exports = {
           '@ui': './src/ui',
           '@api': './src/api',
           '@store': './src/store',
+          '@hooks': './src/hooks',
           '@navigation': './src/navigation',
           '@src': './src',
         },

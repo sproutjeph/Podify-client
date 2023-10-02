@@ -8,7 +8,7 @@ import OTPField from '@ui/OTPField';
 import AppButton from '@ui/AppButton';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from 'src/@types/navigation';
-import axiosInstance from '@api/client';
+import {axiosInstance} from '@api/client';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useAppDispatch} from '@store/hooks';
 import catchAxiosError from '@utils/catchAxiosError';
