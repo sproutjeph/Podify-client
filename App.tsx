@@ -3,13 +3,16 @@ import {Provider} from 'react-redux';
 import store from '@store/index';
 import AppNavigator from '@navigation/index';
 import AppContainer from '@components/AppContainer';
+import {ReactQueryProvider} from '@utils/reactQuery';
 
 const App = () => {
   return (
     <Provider store={store}>
-      <AppContainer>
-        <AppNavigator />
-      </AppContainer>
+      <ReactQueryProvider>
+        <AppContainer>
+          <AppNavigator />
+        </AppContainer>
+      </ReactQueryProvider>
     </Provider>
   );
 };
