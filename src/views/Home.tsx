@@ -1,23 +1,32 @@
-import {useFetchLatestAudios} from '@hooks/queries';
+import LatestUploads from '@components/LastestUploads';
+import colors from '@utils/Colors';
 import React from 'react';
 import {FC} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 interface HomeProps {}
 
 const Home: FC<HomeProps> = ({}) => {
-  const {data} = useFetchLatestAudios();
-  console.log(data);
-
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
+      <LatestUploads />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    padding: 10,
+  },
+  space: {
+    marginBottom: 15,
+  },
+  optionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  optionLabel: {color: colors.PRIMARY, fontSize: 16, marginLeft: 5},
 });
 
 export default Home;
