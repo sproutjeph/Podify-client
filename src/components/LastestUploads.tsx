@@ -8,8 +8,8 @@ import {View, StyleSheet, Text, ScrollView} from 'react-native';
 import {AudioData} from 'src/@types/audio';
 
 interface Props {
-  onAudioPress(item: AudioData, data: AudioData[]): void;
-  onAudioLongPress(item: AudioData, data: AudioData[]): void;
+  onAudioPress?(item: AudioData, data: AudioData[]): void;
+  onAudioLongPress?(item: AudioData, data: AudioData[]): void;
 }
 const dummyData = new Array(4).fill('');
 

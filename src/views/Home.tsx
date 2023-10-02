@@ -1,4 +1,5 @@
 import LatestUploads from '@components/LastestUploads';
+import RecomandedAudio from '@components/RecomandedAudio';
 import colors from '@utils/Colors';
 import React from 'react';
 import {FC} from 'react';
@@ -10,6 +11,7 @@ const Home: FC<HomeProps> = ({}) => {
   return (
     <View style={styles.container}>
       <LatestUploads />
+      <RecomandedAudio />
     </View>
   );
 };
