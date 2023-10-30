@@ -1,6 +1,6 @@
 import {getFromAsyncStorage, StoreKeys} from '@utils/asyncStorage';
 import axios, {CreateAxiosDefaults} from 'axios';
-const baseURL = 'http://192.168.0.100:8000';
+const baseURL = 'http://192.168.0.101:8000';
 export const axiosInstance = axios.create({
   baseURL,
 });
